@@ -1,1 +1,1 @@
-# Bin-it-Right-
+# Waste-Management-System-
