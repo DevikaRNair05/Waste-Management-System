@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Bin It Right - Eco Fun Zone</title>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Segoe+UI&display=swap">
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: linear-gradient(120deg, #e0ffe0, #ffffff);
+      color: #2e7d32;
+      overflow-x: hidden;
+    }
+    header {
+      background: #2e7d32;
+      color: white;
+      padding: 40px 20px;
+      text-align: center;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
+    }
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 10px;
+    }
+    header p {
+      font-size: 1.1rem;
+      font-style: italic;
+    }
+    .game-section {
+      max-width: 1000px;
+      margin: 50px auto;
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 40px;
+    }
+    .game-card {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+      cursor: pointer;
+      text-align: center;
+      transition: transform 0.3s ease;
+    }
+    .game-card:hover {
+      transform: scale(1.03);
+    }
+    .game-card h2 {
+      margin-bottom: 10px;
+      font-size: 1.8rem;
+    }
+    .game-card p {
+      font-size: 1rem;
+      color: #444;
+    }
+    .nav-buttons {
+      text-align: center;
+      margin: 40px 0;
+    }
+    .nav-buttons button {
+      margin: 5px;
+      padding: 10px 20px;
+      background: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+    .nav-buttons button:hover {
+      background: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Eco Fun Zone</h1>
+    <p>Learn sustainability through fun and games!</p>
+  </header>
+
+  <section class="game-section">
+    <div class="game-card" onclick="location.href='binGame.html'">
+      <h2>Bin Sorting Game</h2>
+      <p>Sort items into the correct bins in this fun drag-and-drop game!</p>
+    </div>
+
+    <div class="game-card" onclick="location.href='quizGame.html'">
+      <h2>Eco Quiz</h2>
+      <p>Test your environmental knowledge and earn points!</p>
+    </div>
+
+    <div class="game-card" onclick="location.href='memoryGame.html'">
+      <h2>Memory Match Game</h2>
+      <p>Match the sustainability icons and boost your memory!</p>
+    </div>
+  </section>
+
+  <div class="nav-buttons">
+    <button onclick="location.href='index.html'">🏠 Home Page</button>
+  </div>
+</body>
+</html>

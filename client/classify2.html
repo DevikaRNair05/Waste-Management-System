@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Waste Classifier - Bin It Right</title>
+  <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #e0f2f1;
+      margin: 0;
+      padding: 0;
+      text-align: center;
+    }
+
+    h1 {
+      color: #2e7d32;
+      padding: 20px;
+    }
+
+    #webcam-container {
+      margin: 20px auto;
+    }
+
+    canvas, video {
+      border-radius: 10px;
+    }
+
+    #label-container {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #1b5e20;
+    }
+
+    button {
+      margin: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1b5e20;
+    }
+
+    #map {
+      height: 400px;
+      width: 90%;
+      margin: 30px auto;
+      border-radius: 10px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.1);
+    }
+
+    #location-coords {
+      margin: 10px 0;
+      font-size: 16px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Waste Classifier ♻</h1>
+  <button onclick="init()">Start Camera</button>
+
+  <div id="webcam-container"></div>
+  <div id="label-container"></div>
+
+  <!-- 📍 Location Picker -->
+  <h2>Select Location</h2>
+  <p>Click on the map to pick location</p>
+  <div id="map"></div>
+  <div id="location-coords">Location: Not selected</div>
+
+  <!-- ✅ TensorFlow & Teachable Machine -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.3.0/dist/tf.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+
+  <!-- ✅ Leaflet Map -->
+  <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+  <script>
+    const URL = "https://teachablemachine.withgoogle.com/models/CL8HvZt_Y/";
+    let model, webcam, labelContainer, maxPredictions;
+
+   async function init() {
+  const modelURL = URL + "model.json";
+  const metadataURL = URL + "metadata.json";
+
+  try {
+    model = await tmImage.load(modelURL, metadataURL);
+    maxPredictions = model.getTotalClasses();
+
+    webcam = new tmImage.Webcam(300, 300, true);
+
+    // 🛡️ Wrap camera setup in try-catch
+    await webcam.setup(); // Will ask for permission
+
+    await webcam.play();
+    window.requestAnimationFrame(loop);
+
+    document.getElementById("webcam-container").innerHTML = "";
+    document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+    labelContainer = document.getElementById("label-container");
+    labelContainer.innerHTML = "";
+    for (let i = 0; i < maxPredictions; i++) {
+      labelContainer.appendChild(document.createElement("div"));
+    }
+
+  } catch (err) {
+    alert("⚠️ Could not open your camera. Please allow access or check camera availability.");
+    console.error("Camera setup failed:", err);
+  }
+}
+
+
+    async function loop() {
+      webcam.update();
+      await predict();
+      window.requestAnimationFrame(loop);
+    }
+
+    // async function predict() {
+    //   const prediction = await model.predict(webcam.canvas);
+    //   for (let i = 0; i < maxPredictions; i++) {
+    //     const classPrediction = `${prediction[i].className}: ${(prediction[i].probability * 100).toFixed(2)}%`;
+    //     labelContainer.childNodes[i].innerText = classPrediction;
+    //   }
+    // }
+
+      async function predict() {
+      const prediction = await model.predict(webcam.canvas);
+
+      // Sort by highest probability
+      prediction.sort((a, b) => b.probability - a.probability);
+      const top = prediction[0];
+
+      labelContainer.innerHTML = `${top.className}: ${(top.probability * 100).toFixed(2)}%`;
+
+      if (top.probability > 0.85) {
+        detected = true;
+        webcam.stop(); // Stop webcam
+        labelContainer.innerHTML += `<br><strong>✅ Detected: ${top.className}</strong><br>Process stopped.`;
+      }
+    }
+
+    // 🌍 Initialize Map for Location Selection
+    const map = L.map('map').setView([12.9716, 77.5946], 13);
+    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+      attribution: '© OpenStreetMap contributors'
+    }).addTo(map);
+
+    let marker;
+    map.on('click', function(e) {
+      const { lat, lng } = e.latlng;
+      document.getElementById("location-coords").innerText = `Location: ${lat.toFixed(5)}, ${lng.toFixed(5)}`;
+      if (marker) map.removeLayer(marker);
+      marker = L.marker([lat, lng]).addTo(map);
+    });
+  </script>
+
+</body>
+</html>

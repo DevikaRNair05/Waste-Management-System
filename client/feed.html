@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Community Feed | Bin It Right</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3fff4;
+      color: #2e3d2f;
+      margin: 0;
+    }
+
+    header {
+      background-color: #e1f5e9;
+      padding: 15px 0;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .nav-container {
+      width: 90%;
+      max-width: 1100px;
+      margin: auto;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-size: 1.8rem;
+      font-weight: bold;
+      color: #2c5f2d;
+    }
+
+    .nav-links {
+      list-style: none;
+      display: flex;
+      gap: 30px;
+    }
+
+    .nav-links a {
+      text-decoration: none;
+      color: #2c5f2d;
+      font-weight: 500;
+    }
+
+    .feed-container {
+      max-width: 800px;
+      margin: 50px auto;
+      padding: 20px;
+    }
+
+    .feed-container h2 {
+      text-align: center;
+      margin-bottom: 30px;
+      color: #2c5f2d;
+    }
+
+    .feed-post {
+      background: #e1f5e9;
+      border-radius: 10px;
+      margin-bottom: 30px;
+      overflow: hidden;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    .feed-post img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    .post-info {
+      padding: 15px;
+    }
+
+    .post-info p {
+      margin-bottom: 10px;
+      color: #2e3d2f;
+    }
+
+    .vote-buttons {
+      display: flex;
+      gap: 10px;
+      margin-top: 10px;
+    }
+
+    .vote {
+      flex: 1;
+      padding: 10px;
+      border: none;
+      color: white;
+      font-weight: bold;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .vote.red { background-color: #e53935; }
+    .vote.yellow { background-color: #fdd835; color: #333; }
+    .vote.green { background-color: #43a047; }
+
+    .report-footer {
+      text-align: center;
+      margin: 40px 0;
+    }
+
+    .report-link {
+      display: inline-block;
+      padding: 12px 24px;
+      background-color: #4caf50;
+      color: white;
+      font-weight: bold;
+      text-decoration: none;
+      border-radius: 8px;
+      transition: background-color 0.3s ease;
+    }
+
+    .report-link:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <div class="nav-container">
+      <div class="logo">Bin It Right ♻</div>
+      <nav>
+        <ul class="nav-links">
+          <li><a href="index.html">Home</a></li>
+          <li><a href="report.html">Submit Report</a></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <section class="feed-container">
+    <h2>Community Waste Reports</h2>
+    <div id="report-list"></div>
+  </section>
+
+  <script>
+    async function loadReports() {
+      const res = await fetch('http://localhost:3000/reports');
+      const data = await res.json();
+      const reportList = document.getElementById("report-list");
+      reportList.innerHTML = "";
+
+      data.forEach(report => {
+        const post = document.createElement("div");
+        post.className = "feed-post";
+        post.innerHTML = `
+          <img src="${report.image}" alt="Waste Report Image" />
+          <div class="post-info">
+            <p><strong>Location:</strong> ${report.location}</p>
+            <p>${report.description}</p>
+            <div class="vote-buttons" data-id="${report._id}">
+              <button class="vote red" onclick="vote(this, 'red')">🔴 <span>${report.redVotes}</span></button>
+              <button class="vote yellow" onclick="vote(this, 'yellow')">🟡 <span>${report.yellowVotes}</span></button>
+              <button class="vote green" onclick="vote(this, 'green')">🟢 <span>${report.greenVotes}</span></button>
+            </div>
+          </div>`;
+        reportList.appendChild(post);
+      });
+    }
+
+    async function vote(button, type) {
+      const voteButtons = button.parentElement;
+      const reportId = voteButtons.getAttribute('data-id');
+
+      const res = await fetch(`http://localhost:3000/vote/${reportId}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ type })
+      });
+
+      if (res.ok) {
+        const span = button.querySelector("span");
+        span.textContent = parseInt(span.textContent) + 1;
+      } else {
+        alert("Error submitting vote.");
+      }
+    }
+
+    window.onload = loadReports;
+  </script>
+
+  <div class="report-footer">
+    <a href="report.html" class="report-link">➕ Submit a Report</a>
+  </div>
+
+</body>
+</html>

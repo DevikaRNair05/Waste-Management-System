@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Memory Match Game - Bin It Right</title>
+  <style>
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: url('https://wallpapers.com/images/hd/foggy-road-in-the-greenery-14nynhc1vprvdtz4.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #2e7d32;
+    }
+
+    header {
+      text-align: center;
+      padding: 60px 20px 20px;
+      background: rgba(255, 255, 255, 0.85);
+    }
+
+    header h1 {
+      font-size: 2.8rem;
+      margin-bottom: 10px;
+    }
+
+    header p {
+      font-size: 1.2rem;
+      font-style: italic;
+      color: #444;
+    }
+
+    .game-container {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 15px;
+    }
+
+    .card {
+      width: 100%;
+      aspect-ratio: 1 / 1;
+      background: #2e7d32;
+      border-radius: 10px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 2rem;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .card.matched {
+      background: #a5d6a7;
+      cursor: default;
+      transform: scale(0.95);
+    }
+
+    .buttons {
+      text-align: center;
+      margin-top: 30px;
+    }
+
+    .buttons button {
+      background-color: #2e7d32;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .buttons button:hover {
+      background-color: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Memory Match Game</h1>
+    <p>Find the matching pairs of eco icons 🌱</p>
+  </header>
+
+  <div class="game-container">
+    <div class="grid" id="grid"></div>
+  </div>
+
+  <div class="buttons">
+    <button onclick="window.location.href='eco-funzone.html'">← Back to Fun Zone</button>
+    <button onclick="window.location.href='index.html'">🏠 Home</button>
+  </div>
+
+  <script>
+    const icons = ['♻','🌳','🚮','🧃','🍃','🌊','🪴','🌱'];
+    const grid = document.getElementById('grid');
+    let cardValues = [...icons, ...icons].sort(() => 0.5 - Math.random());
+
+    let firstCard = null;
+    let secondCard = null;
+    let lockBoard = false;
+
+    function createCard(value, index) {
+      const card = document.createElement('div');
+      card.classList.add('card');
+      card.dataset.value = value;
+      card.dataset.index = index;
+      card.innerHTML = '❓';
+
+      card.addEventListener('click', () => {
+        if (lockBoard || card.classList.contains('matched') || card === firstCard) return;
+
+        card.innerHTML = value;
+
+        if (!firstCard) {
+          firstCard = card;
+        } else {
+          secondCard = card;
+          lockBoard = true;
+
+          setTimeout(() => {
+            if (firstCard.dataset.value === secondCard.dataset.value) {
+              firstCard.classList.add('matched');
+              secondCard.classList.add('matched');
+            } else {
+              firstCard.innerHTML = '❓';
+              secondCard.innerHTML = '❓';
+            }
+            firstCard = null;
+            secondCard = null;
+            lockBoard = false;
+          }, 800);
+        }
+      });
+
+      return card;
+    }
+
+    function initGame() {
+      grid.innerHTML = '';
+      cardValues.forEach((val, i) => {
+        const card = createCard(val, i);
+        grid.appendChild(card);
+      });
+    }
+
+    initGame();
+  </script>
+</body>
+</html>

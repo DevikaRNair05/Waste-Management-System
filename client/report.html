@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Submit Report | Bin It Right</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      background-color: #f3fff4;
+      margin: 0;
+      padding: 0;
+    }
+
+    .container {
+      max-width: 600px;
+      margin: 80px auto;
+      background-color: #c8e6c9;
+      padding: 40px;
+      border-radius: 12px;
+      box-shadow: 0 4px 10px rgba(0,0,0,0.1);
+    }
+
+    h2 {
+      text-align: center;
+      color: #2e7d32;
+      margin-bottom: 30px;
+    }
+
+    input, textarea, button {
+      width: 100%;
+      padding: 12px;
+      margin: 10px 0;
+      border: 1px solid #a5d6a7;
+      border-radius: 6px;
+      font-size: 1rem;
+    }
+
+    button {
+      background-color: #4caf50;
+      color: white;
+      font-weight: bold;
+      border: none;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    button:hover {
+      background-color: #388e3c;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h2>Report Waste Location</h2>
+    <form id="reportForm">
+      <input type="text" name="image" placeholder="Image URL" required />
+      <input type="text" name="location" placeholder="Location (e.g., Park Road, Sector 12)" required />
+      <textarea name="description" rows="4" placeholder="Describe the issue..." required></textarea>
+      <button type="submit">Submit Report</button>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById("reportForm").addEventListener("submit", async (e) => {
+      e.preventDefault();
+      const form = e.target;
+      const data = {
+        image: form.image.value,
+        location: form.location.value,
+        description: form.description.value
+      };
+
+      const res = await fetch("http://localhost:3000/report", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data)
+      });
+
+      if (res.ok) {
+        alert("Report submitted successfully!");
+        window.location.href = "feed.html";
+      } else {
+        alert("Error submitting report.");
+      }
+    });
+  </script>
+</body>
+</html>

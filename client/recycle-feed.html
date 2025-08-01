@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Recycle Feed</title>
+  <style>
+    body {
+      background-color: #e9fce9;
+      font-family: Arial, sans-serif;
+      padding: 20px;
+      color: #003300;
+    }
+
+    h2 {
+      text-align: center;
+      color: #1d5e1d;
+    }
+
+    .card {
+      background-color: #d0f0c0;
+      border: 1px solid #7abf7a;
+      border-radius: 10px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 2px 2px 8px rgba(0, 100, 0, 0.1);
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+
+    .card img {
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      border-radius: 10px;
+    }
+
+    .card-content {
+      flex: 1;
+    }
+
+    button {
+      background-color: #4CAF50;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-top: 10px;
+    }
+
+    button:hover {
+      background-color: #45a049;
+    }
+  </style>
+</head>
+<body>
+  <h2>Recyclable Items for Sale</h2>
+  <div id="feed"></div>
+
+  <script>
+    async function fetchFeed() {
+      try {
+        const response = await fetch('http://localhost:5000/recycling');
+        const items = await response.json();
+
+        const feed = document.getElementById('feed');
+        feed.innerHTML = '';
+
+        items.forEach(item => {
+          const card = document.createElement('div');
+          card.className = 'card';
+
+          const image = document.createElement('img');
+          image.src = item.image;
+          image.alt = 'Waste image';
+
+          const content = document.createElement('div');
+          content.className = 'card-content';
+
+          content.innerHTML = `
+            <h3>${item.wasteType}</h3>
+            <p><strong>Description:</strong> ${item.description}</p>
+            <p><strong>Cost:</strong> ₹${item.cost}</p>
+            <p><strong>Location:</strong> ${item.location}</p>
+          `;
+
+          const button = document.createElement('button');
+          button.textContent = 'Buy';
+          button.onclick = () => alert('Thank you for your interest!');
+
+          card.appendChild(image);
+          card.appendChild(content);
+          card.appendChild(button);
+
+          feed.appendChild(card);
+        });
+      } catch (err) {
+        console.error('Failed to load feed:', err);
+      }
+    }
+
+    fetchFeed();
+  </script>
+</body>
+</html>

@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bin Sorting Game</title>
+  <style>
+    body {
+      font-family: 'Segoe UI', sans-serif;
+      margin: 0;
+      background: url('https://wallpapers.com/images/hd/foggy-road-in-the-greenery-14nynhc1vprvdtz4.jpg') no-repeat center center fixed;
+      background-size: cover;
+      color: #2e7d32;
+    }
+
+    .game-container {
+      max-width: 700px;
+      margin: 30px auto;
+      padding: 20px;
+      background: rgba(255, 255, 255, 0.9);
+      border-radius: 12px;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.15);
+      text-align: center;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-size: 2.2rem;
+    }
+
+    p {
+      font-size: 1.1rem;
+      font-style: italic;
+      color: #444;
+    }
+
+    .bins, .items {
+      display: flex;
+      justify-content: center;
+      gap: 30px;
+      flex-wrap: wrap;
+      margin-top: 30px;
+    }
+
+    .bin {
+      border: 2px dashed #2e7d32;
+      border-radius: 10px;
+      width: 120px;
+      height: 180px;
+      background-color: #e0f7e0;
+      position: relative;
+      display: flex;
+      flex-direction: column;
+      justify-content: flex-end;
+      align-items: center;
+      padding: 5px;
+      overflow-y: auto;
+    }
+
+    .item {
+      cursor: grab;
+      background-color: #ffffff;
+      border: 2px dashed #2e7d32;
+      border-radius: 10px;
+      width: 80px;
+      height: 30px;
+      margin: 5px 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.8rem;
+    }
+
+    .bin.correct {
+      border: 3px solid #4caf50;
+    }
+
+    .bin.wrong {
+      border: 3px solid #f44336;
+    }
+
+    .buttons {
+      margin-top: 30px;
+    }
+
+    .buttons button {
+      background-color: #2e7d32;
+      color: white;
+      padding: 10px 20px;
+      margin: 10px;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 1rem;
+    }
+
+    .buttons button:hover {
+      background-color: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+  <div class="game-container">
+    <h1>Bin Sorting Game</h1>
+    <p>Drag each item to the correct bin!</p>
+
+    <div class="items">
+      <div class="item" draggable="true" id="plastic">Plastic Bottle</div>
+      <div class="item" draggable="true" id="banana">Banana Peel</div>
+      <div class="item" draggable="true" id="newspaper">Newspaper</div>
+      <div class="item" draggable="true" id="cup">Plastic Cup</div>
+      <div class="item" draggable="true" id="apple">Apple Core</div>
+      <div class="item" draggable="true" id="magazine">Magazine</div>
+    </div>
+
+    <div class="bins">
+      <div class="bin" data-type="plastic">Plastic</div>
+      <div class="bin" data-type="organic">Organic</div>
+      <div class="bin" data-type="paper">Paper</div>
+    </div>
+
+    <div class="buttons">
+      <button onclick="window.location.href='eco-funzone.html'">← Back to Fun Zone</button>
+      <button onclick="window.location.href='index.html'">🏠 Home</button>
+    </div>
+  </div>
+
+  <script>
+    const items = document.querySelectorAll('.item');
+    const bins = document.querySelectorAll('.bin');
+
+    items.forEach(item => {
+      item.addEventListener('dragstart', e => {
+        e.dataTransfer.setData('text/plain', e.target.id);
+      });
+    });
+
+    bins.forEach(bin => {
+      bin.addEventListener('dragover', e => e.preventDefault());
+
+      bin.addEventListener('drop', e => {
+        e.preventDefault();
+        const id = e.dataTransfer.getData('text/plain');
+        const item = document.getElementById(id);
+
+        const typeMap = {
+          plastic: ['plastic', 'cup'],
+          organic: ['banana', 'apple'],
+          paper: ['newspaper', 'magazine']
+        };
+
+        if (typeMap[bin.dataset.type].includes(id)) {
+          bin.classList.add('correct');
+          item.style.cursor = 'default';
+          item.setAttribute('draggable', 'false');
+          item.style.backgroundColor = '#c8facc';
+          bin.appendChild(item);
+        } else {
+          bin.classList.add('wrong');
+          setTimeout(() => bin.classList.remove('wrong'), 1000);
+          alert('Oops! Wrong bin.');
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Waste Classifier - Bin It Right</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      text-align: center;
+      background: #e0f2f1;
+      margin: 0;
+      padding: 0;
+    }
+
+    h1 {
+      color: #2e7d32;
+      padding: 20px;
+    }
+
+    #webcam-container {
+      margin: 20px auto;
+    }
+
+    canvas, video {
+      border-radius: 10px;
+    }
+
+    #label-container {
+      margin-top: 20px;
+      font-size: 20px;
+      color: #1b5e20;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #2e7d32;
+      color: white;
+      border: none;
+      border-radius: 6px;
+      cursor: pointer;
+    }
+
+    button:hover {
+      background-color: #1b5e20;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Waste Classifier ♻</h1>
+  <button onclick="init()">Start Camera</button>
+
+  <div id="webcam-container"></div>
+  <div id="label-container"></div>
+
+  <!-- ✅ TensorFlow.js -->
+  <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@3.3.0/dist/tf.min.js"></script>
+
+  <!-- ✅ Teachable Machine library -->
+  <script src="https://cdn.jsdelivr.net/npm/@teachablemachine/image@0.8/dist/teachablemachine-image.min.js"></script>
+
+  <script>
+    const URL = "https://teachablemachine.withgoogle.com/models/ORnFY-XP9/";
+
+    let model, webcam, labelContainer, maxPredictions;
+    let detected = false;
+
+    async function init() {
+      const modelURL = URL + "model.json";
+      const metadataURL = URL + "metadata.json";
+
+      // Load the model and metadata
+      model = await tmImage.load(modelURL, metadataURL);
+      maxPredictions = model.getTotalClasses();
+
+      // Setup webcam
+      const flip = true;
+      webcam = new tmImage.Webcam(300, 300, flip);
+      await webcam.setup(); // ask for camera access
+      await webcam.play();
+      window.requestAnimationFrame(loop);
+
+      // Append canvas
+      document.getElementById("webcam-container").appendChild(webcam.canvas);
+
+      // Create prediction label container
+      labelContainer = document.getElementById("label-container");
+    }
+
+    async function loop() {
+      if (!detected) {
+        webcam.update();
+        await predict();
+        window.requestAnimationFrame(loop);
+      }
+    }
+
+    async function predict() {
+      const prediction = await model.predict(webcam.canvas);
+
+      // Sort by highest probability
+      prediction.sort((a, b) => b.probability - a.probability);
+      const top = prediction[0];
+
+      labelContainer.innerHTML = `${top.className}: ${(top.probability * 100).toFixed(2)}%`;
+
+      if (top.probability > 0.85) {
+        detected = true;
+        webcam.stop(); // Stop webcam
+        labelContainer.innerHTML += `<br><strong>✅ Detected: ${top.className}</strong><br>Process stopped.`;
+      }
+    }
+  </script>
+</body>
+</html>

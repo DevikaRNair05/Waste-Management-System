@@ -1,0 +1,371 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Bin It Right</title>
+  <style>
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      margin: 0;
+      font-family: 'Segoe UI', sans-serif;
+      background: #fff;
+      color: #2e7d32;
+    }
+
+    .auth-buttons {
+      position: absolute;
+      top: 30px;
+      right: 50px;
+      z-index: 100;
+    }
+
+    .auth-buttons a {
+      margin-left: 15px;
+      padding: 10px 20px;
+      color: white;
+      text-decoration: none;
+      border: 2px solid white;
+      border-radius: 25px;
+      font-weight: bold;
+      transition: 0.3s;
+    }
+
+    .auth-buttons a:hover {
+      background-color: white;
+      color: #2e7d32;
+    }
+
+    .dropdown {
+      position: relative;
+      display: inline-block;
+    }
+
+    .dropdown-toggle {
+      background: none;
+      border: 2px solid white;
+      border-radius: 25px;
+      padding: 10px 20px;
+      color: white;
+      font-weight: bold;
+      cursor: pointer;
+      font-family: 'Segoe UI', sans-serif;
+      transition: 0.3s;
+    }
+
+    .dropdown-toggle:hover {
+      background-color: white;
+      color: #2e7d32;
+    }
+
+    .dropdown-menu {
+      display: none;
+      position: absolute;
+      top: 45px;
+      right: 0;
+      background-color: white;
+      color: #2e7d32;
+      border: 1px solid #c8e6c9;
+      border-radius: 8px;
+      box-shadow: 0 8px 16px rgba(0, 0, 0, 0.1);
+      list-style: none;
+      padding: 0;
+      margin: 0;
+      z-index: 1000;
+      min-width: 160px;
+    }
+
+    .dropdown-menu li a {
+      display: block;
+      padding: 12px 20px;
+      color: #2e7d32;
+      text-decoration: none;
+      border-bottom: 1px solid #eee;
+      font-weight: 500;
+      transition: background 0.3s;
+    }
+
+    .dropdown-menu li:last-child a {
+      border-bottom: none;
+    }
+
+    .dropdown-menu li a:hover {
+      background-color: #e0f2f1;
+      color: #1b5e20;
+    }
+
+    .dropdown:hover .dropdown-menu {
+      display: block;
+    }
+
+    header {
+      height: 100vh;
+      background: url('https://wallpapers.com/images/hd/foggy-road-in-the-greenery-14nynhc1vprvdtz4.jpg') no-repeat center center/cover;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+      color: white;
+      position: relative;
+    }
+
+    header h1 {
+      font-size: 3rem;
+      margin: 0;
+      letter-spacing: 2px;
+    }
+
+    header p {
+      font-size: 1.3rem;
+      margin-top: 10px;
+      font-style: italic;
+    }
+
+    .scroll-down {
+      margin-top: 40px;
+      font-size: 1.1rem;
+      padding: 10px 22px;
+      background: transparent;
+      color: white;
+      border: 2px solid white;
+      border-radius: 30px;
+      cursor: pointer;
+      transition: background 0.3s, color 0.3s;
+    }
+
+    .scroll-down:hover {
+      background: white;
+      color: #2e7d32;
+    }
+
+    .features-section {
+      background: #f4fdf4;
+      padding: 80px 10%;
+    }
+
+    .feature-row {
+      display: flex;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 100px;
+      gap: 40px;
+      opacity: 0;
+      transform: translateY(60px);
+      transition: all 0.7s ease-in-out;
+    }
+
+    .feature-row:nth-child(even) {
+      flex-direction: row-reverse;
+    }
+
+    .feature-row.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    .feature-img {
+      flex: 1;
+      min-width: 300px;
+      aspect-ratio: 1 / 1;
+      background-color: #000;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+      border-radius: 50%;
+      clip-path: circle(50% at 50% 50%);
+    }
+
+    .feature-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      filter: brightness(75%);
+      transition: transform 0.4s ease;
+    }
+
+    .feature-img:hover img {
+      transform: scale(1.05);
+    }
+
+    .feature-desc {
+      flex: 1;
+    }
+
+    .feature-desc h2 {
+      font-size: 2rem;
+      margin-bottom: 10px;
+    }
+
+    .feature-desc p {
+      font-size: 1.1rem;
+      line-height: 1.6;
+      color: #444;
+    }
+
+    @media (max-width: 768px) {
+      .feature-row,
+      .feature-row:nth-child(even) {
+        flex-direction: column;
+        text-align: center;
+      }
+
+      .auth-buttons {
+        position: static;
+        margin-top: 15px;
+      }
+      
+    }
+    .auth-buttons button {
+  margin-left: 15px;
+  padding: 10px 20px;
+  color: white;
+  background: none;
+  border: 2px solid white;
+  border-radius: 25px;
+  font-weight: bold;
+  font-family: 'Segoe UI', sans-serif;
+  cursor: pointer;
+  transition: background 0.3s, color 0.3s;
+}
+
+.auth-buttons button:hover {
+  background-color: white;
+  color: #2e7d32;
+}
+
+  </style>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const email = sessionStorage.getItem("userEmail");
+      if (email) {
+        try {
+          const res = await fetch(`http://localhost:3000/getuser/${email}`);
+          const user = await res.json();
+
+          if (res.ok) {
+            if (user.isAdmin == true) {
+              window.location.href = "admin.html";
+              return;
+            }
+            // alert(`Welcome, ${user.username} (${user.isAdmin ? "Admin" : "User"})`);
+          } else {
+            console.error(user.message);
+          }
+        } catch (err) {
+          console.error("Failed to fetch user info:", err);
+        }
+      }
+
+      const observer = new IntersectionObserver(entries => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('visible');
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('.feature-row').forEach(row => {
+        observer.observe(row);
+      });
+
+      const featuresSection = document.getElementById("features");
+      const scrollBtn = document.querySelector(".scroll-down");
+      const loggedIn = localStorage.getItem("loggedIn");
+
+      if (!loggedIn) {
+        featuresSection.style.display = "none";
+        scrollBtn.style.display = "none";
+      }
+    });
+  </script>
+
+  <script>
+    function logout() {
+      localStorage.removeItem("loggedIn");
+      sessionStorage.removeItem("userEmail");
+      window.location.href = "user.html";
+    }
+  </script>
+
+</head>
+<body>
+
+  <div class="auth-buttons">
+    <div class="dropdown">
+      <button class="dropdown-toggle">Login ▾</button>
+      <button onclick="logout()">Logout</button>
+      <ul class="dropdown-menu">
+        <li><a href="user.html">User</a></li>
+        <li><a href="official.html">Official</a></li>
+      </ul>
+    </div>
+    <a href="register.html">Register</a>
+  </div>
+
+  <header>
+    <h1>Bin It Right ♻</h1>
+    <p>Let’s bin it right together for a cleaner planet</p>
+    <button class="scroll-down" onclick="document.getElementById('features').scrollIntoView({ behavior: 'smooth' });">
+      Explore Features ↓
+    </button>
+  </header>
+
+  <section id="features" class="features-section">
+    <div class="feature-row">
+      <div class="feature-img" onclick="location.href='feed.html'">
+        <img src="https://st3.depositphotos.com/3889193/12524/i/950/depositphotos_125247698-stock-photo-man-taking-a-picture-of.jpg" alt="Community">
+      </div>
+      <div class="feature-desc">
+        <h2>Community Waste Alerts</h2>
+        <p>Users can post pictures of waste dumped in public places, allowing the community to interact, comment, and alert the authorities effectively.</p>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-img" onclick="location.href='classify2.html'">
+        <img src="https://www.rittenhousevillages.com/wp-content/uploads/2023/08/understanding-waste-management-in-an-assisted-living-property-in-michigan-city-in-img.jpg" alt="Segregation">
+      </div>
+      <div class="feature-desc">
+        <h2>Smart Waste Segregation</h2>
+        <p>Use your phone camera to scan and classify waste into appropriate categories like biodegradable, recyclable, and hazardous waste.</p>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-img" onclick="location.href='payment.html'">
+        <img src="https://as2.ftcdn.net/v2/jpg/01/88/60/49/1000_F_188604935_ukS70Csgm5XhiS0BPhC78XhqctZV1zll.jpg" alt="Payment">
+      </div>
+      <div class="feature-desc">
+        <h2>Worker Payment Portal</h2>
+        <p>Enable timely and transparent payments for the sanitation workers visiting to collect the waste in your area through digital means.</p>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-img" onclick="location.href='funzone.html'">
+        <img src="https://th.bing.com/th/id/OIP.YyG2pm4PX6eJCkqIY9vDpQHaE8?w=236&h=180&c=7&r=0&o=7&dpr=1.3&pid=1.7&rm=3" alt="Quiz">
+      </div>
+      <div class="feature-desc">
+        <h2>Eco Awareness Quiz</h2>
+        <p>Play interactive quizzes to improve your sustainability knowledge and earn coins while having fun and learning important tips.</p>
+      </div>
+    </div>
+
+    <div class="feature-row">
+      <div class="feature-img" onclick="location.href='recycling.html'">
+        <img src="https://static.vecteezy.com/system/resources/previews/035/756/716/non_2x/ai-generated-circle-made-of-clothes-on-blue-background-recycling-concept-a-colorful-circle-of-clothes-with-a-logo-symbolizing-recycling-zero-waste-and-reuse-concept-ai-generated-free-photo.jpg" alt="Recycling">
+      </div>
+      <div class="feature-desc">
+        <h2>Connect with Recyclers</h2>
+        <p>Link up with certified recycling agencies near your location and send recyclable materials directly for reuse, reducing landfill burden.</p>
+      </div>
+    </div>
+  </section>
+
+</body>
+</html>
